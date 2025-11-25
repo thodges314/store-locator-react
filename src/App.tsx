@@ -5,6 +5,7 @@ import mapboxgl from 'mapbox-gl';
 import { useEffect, useRef, useState } from 'react';
 
 import { storeLocations } from './assets/locations';
+import Marker from './MArker';
 
 import type { StoreFeature } from './assets/locations';
 
@@ -59,7 +60,16 @@ function App() {
 
       {/* Map container */}
       <div className="w-3/4">
-        <div className="h-full w-full" ref={mapContainerRef} />
+        <div className="h-full w-full" ref={mapContainerRef}>
+          {mapLoaded &&
+            stores.map((location) => (
+              <Marker
+                key={location.properties.name}
+                feature={location}
+                map={mapRef.current!}
+              />
+            ))}
+        </div>
       </div>
     </div>
   );
