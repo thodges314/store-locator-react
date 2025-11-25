@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import 'mapbox-gl/dist/mapbox-gl.css';
+import './App.css';
+
+import mapboxgl from 'mapbox-gl';
+import { useEffect, useRef } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+    mapRef.current = new mapboxgl.Map({
+      container: mapContainerRef.current!,
+      // style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-121.478851, 38.575764], // Sacramento, CA
+      zoom: 13,
+      config: {
+        basemap: { theme: 'faded' },
+      },
+    });
+    return () => {
+      mapRef.current?.remove();
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex absolute top-0 left-0 right-0 bottom-0 h-full w-full">
+      {/* Sidebar placeholder */}
+      <div className="w-1/4 p-4 bg-sg-light-green">
+        <h2 className="text-sg-green text-xl font-bold">Stores nearby:</h2>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      {/* Map container */}
+      <div className="w-3/4">
+        <div className="h-full w-full" ref={mapContainerRef} />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
