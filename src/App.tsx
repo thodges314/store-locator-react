@@ -5,7 +5,8 @@ import mapboxgl from 'mapbox-gl';
 import { useEffect, useRef, useState } from 'react';
 
 import { storeLocations } from './assets/locations';
-import Marker from './MArker';
+import Marker from './Marker';
+import Sidebar from './Sidebar';
 
 import type { StoreFeature } from './assets/locations';
 
@@ -14,6 +15,7 @@ function App() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const [stores] = useState<StoreFeature[]>(storeLocations);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<StoreFeature | null>(null);
 
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
@@ -49,14 +51,24 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!selectedStore) return;
+
+    mapRef.current!.flyTo({
+      center: selectedStore.geometry.coordinates,
+      zoom: 13,
+      duration: 1000,
+    });
+  }, [selectedStore]);
+
   return (
     <div className="flex absolute top-0 left-0 right-0 bottom-0 h-full w-full">
       {/* Sidebar placeholder */}
-      <div className="w-1/4 p-4 bg-sg-light-green">
-        <h2 className="text-sg-green text-xl font-bold">
-          Stores nearby: {stores.length}
-        </h2>
-      </div>
+      <Sidebar
+        stores={stores}
+        setSelectedStore={setSelectedStore}
+        selectedStore={selectedStore}
+      />
 
       {/* Map container */}
       <div className="w-3/4">
@@ -67,6 +79,8 @@ function App() {
                 key={location.properties.name}
                 feature={location}
                 map={mapRef.current!}
+                setSelectedStore={setSelectedStore}
+                selectedStore={selectedStore}
               />
             ))}
         </div>
