@@ -2,11 +2,17 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.css';
 
 import mapboxgl from 'mapbox-gl';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import { storeLocations } from './assets/locations';
+
+import type { StoreFeature } from './assets/locations';
 
 function App() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const [stores] = useState<StoreFeature[]>(storeLocations);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
@@ -19,6 +25,24 @@ function App() {
         basemap: { theme: 'faded' },
       },
     });
+
+    mapRef.current.on('load', () => {
+      setMapLoaded(true);
+      // stores.forEach((store) => {
+      //   new mapboxgl.Marker()
+      //    .setLngLat(store.geometry.coordinates)
+      //    .addTo(mapRef.current!)
+      //    .setPopup(
+      //       new mapboxgl.Popup({ offset: 25 })
+      //        .setHTML(
+      //           `<h3>${store.properties.name}</h3>
+      //           <p>${store.properties.address}</p>
+      //           <p>${store.properties.phoneFormatted}</p>`
+      //         )
+      //     );
+      // });
+    });
+
     return () => {
       mapRef.current?.remove();
     };
@@ -28,7 +52,9 @@ function App() {
     <div className="flex absolute top-0 left-0 right-0 bottom-0 h-full w-full">
       {/* Sidebar placeholder */}
       <div className="w-1/4 p-4 bg-sg-light-green">
-        <h2 className="text-sg-green text-xl font-bold">Stores nearby:</h2>
+        <h2 className="text-sg-green text-xl font-bold">
+          Stores nearby: {stores.length}
+        </h2>
       </div>
 
       {/* Map container */}
