@@ -31,19 +31,6 @@ function App() {
 
     mapRef.current.on('load', () => {
       setMapLoaded(true);
-      // stores.forEach((store) => {
-      //   new mapboxgl.Marker()
-      //    .setLngLat(store.geometry.coordinates)
-      //    .addTo(mapRef.current!)
-      //    .setPopup(
-      //       new mapboxgl.Popup({ offset: 25 })
-      //        .setHTML(
-      //           `<h3>${store.properties.name}</h3>
-      //           <p>${store.properties.address}</p>
-      //           <p>${store.properties.phoneFormatted}</p>`
-      //         )
-      //     );
-      // });
     });
 
     return () => {

@@ -1,0 +1,4 @@
+.store-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  /* Move the tip 45px to the left from its default centered position */
+  margin-left: -45px;
+}

@@ -1,3 +1,5 @@
+import './Marker.css';
+
 import mapboxgl from 'mapbox-gl';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -24,8 +26,17 @@ const Marker = ({
   const isSelected = selectedStore?.properties.name === feature.properties.name;
 
   useEffect(() => {
+    const popUp = new mapboxgl.Popup({
+      offset: [25, -25],
+      className: 'store-popup',
+    }).setHTML(
+      `<h3>${feature.properties.name}</h3>
+					<p>${feature.properties.address}</p>
+					<p>${feature.properties.phoneFormatted}</p>`
+    );
     markerRef.current = new mapboxgl.Marker(contentRef.current)
       .setLngLat(geometry.coordinates)
+      .setPopup(popUp)
       .addTo(map);
 
     return () => {
