@@ -29,11 +29,18 @@ const Marker = ({
     const popUp = new mapboxgl.Popup({
       offset: [25, -25],
       className: 'store-popup',
-    }).setHTML(
-      `<h3>${feature.properties.name}</h3>
+      closeButton: false,
+    })
+      .setHTML(
+        `<h3>${feature.properties.name}</h3>
 					<p>${feature.properties.address}</p>
 					<p>${feature.properties.phoneFormatted}</p>`
-    );
+      )
+      .on('open', () => {
+        const { lng, lat } = popUp.getLngLat();
+        console.log('Popup opened at:', lng, lat);
+        // const lat = popUp.getLngLat().lat;
+      });
     markerRef.current = new mapboxgl.Marker(contentRef.current)
       .setLngLat(geometry.coordinates)
       .setPopup(popUp)
